@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #2e2e2e; /* Dark background */
+            color: #e0e0e0; /* Light grey text */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: #3c3c3c; /* Slightly lighter background for the table */
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #555; /* Dark grey header */
+            color: #e0e0e0; /* Light grey text */
+        }
+        tr:nth-child(even) {
+            background-color: #4a4a4a; /* Darker grey for even rows */
+        }
+        tr:hover {
+            background-color: #616161; /* Lighter grey on hover */
+        }
+        a {
+            color: #4CAF50; /* Green text */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #3c3c3c; /* Slightly lighter grey background for the container */
+            border-radius: 8px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            background-color: #4CAF50; /* Green background */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Suggestions Based on Score Points</h1>
+        </div>
+        <a href="/" class="back-button">Back to Main Page</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item ID</th>
+                    <th>Score</th>
+                    <th>Suggestion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in suggestions %}
+                <tr>
+                    <td><a href="/item/{{ item.item_id }}">{{ item.item_id }}</a></td>
+                    <td>{{ item.score | round(2) }}</td>
+                    <td>{{ item.suggestion }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

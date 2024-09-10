@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bazaar Profit Margin Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #2e2e2e; /* Dark background */
+            color: #e0e0e0; /* Light grey text */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: #3c3c3c; /* Slightly lighter background for the table */
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #555; /* Dark grey header */
+            color: #e0e0e0; /* Light grey text */
+            cursor: pointer;
+        }
+        th.sorted-asc::after {
+            content: " ▲";
+        }
+        th.sorted-desc::after {
+            content: " ▼";
+        }
+        tr:nth-child(even) {
+            background-color: #4a4a4a; /* Darker grey for even rows */
+        }
+        tr:hover {
+            background-color: #616161; /* Lighter grey on hover */
+        }
+        a {
+            color: #4CAF50; /* Green text */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #3c3c3c; /* Slightly lighter grey background for the container */
+            border-radius: 8px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .suggestions-button, .back-button {
+            background-color: #4CAF50; /* Green background */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .suggestions-button:hover, .back-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortBy = urlParams.get('sort_by') || 'score';
+            const sortOrder = urlParams.get('sort_order') || 'desc';
+            
+            const sortedTh = document.querySelector(`th[data-column="${sortBy}"]`);
+            if (sortedTh) {
+                sortedTh.classList.add(sortOrder === 'asc' ? 'sorted-asc' : 'sorted-desc');
+            }
+        });
+
+        function sortTable(column) {
+            const currentSortOrder = document.querySelector('th.sorted-asc, th.sorted-desc');
+            let sortOrder = 'asc';
+
+            if (currentSortOrder && currentSortOrder.dataset.column === column) {
+                sortOrder = currentSortOrder.classList.contains('sorted-asc') ? 'desc' : 'asc';
+                currentSortOrder.classList.toggle('sorted-asc', sortOrder === 'asc');
+                currentSortOrder.classList.toggle('sorted-desc', sortOrder === 'desc');
+            } else {
+                if (currentSortOrder) {
+                    currentSortOrder.classList.remove('sorted-asc', 'sorted-desc');
+                }
+                document.querySelector(`th[data-column="${column}"]`).classList.add('sorted-asc');
+            }
+
+            window.location.href = `/?sort_by=${column}&sort_order=${sortOrder}`;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bazaar Profit Margin Tracker</h1>
+        </div>
+        <a href="/suggestions" class="suggestions-button">View Suggestions</a>
+        <a href="/" class="back-button">Back to Main Page</a>
+        <table>
+            <thead>
+                <tr>
+                    <th data-column="item_id" onclick="sortTable('item_id')">Item ID</th>
+                    <th data-column="lowest_buy_price" onclick="sortTable('lowest_buy_price')">Lowest Buy Price</th>
+                    <th data-column="highest_sell_price" onclick="sortTable('highest_sell_price')">Highest Sell Price</th>
+                    <th data-column="profit_margin" onclick="sortTable('profit_margin')">Profit Margin</th>
+                    <th data-column="buy_volume" onclick="sortTable('buy_volume')">Buy Volume</th>
+                    <th data-column="sell_volume" onclick="sortTable('sell_volume')">Sell Volume</th>
+                    <th data-column="score" onclick="sortTable('score')">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in profit_margins %}
+                <tr>
+                    <td><a href="/item/{{ item.item_id }}">{{ item.item_id }}</a></td>
+                    <td>{{ item.lowest_buy_price | round(2) }}</td>
+                    <td>{{ item.highest_sell_price | round(2) }}</td>
+                    <td>{{ item.profit_margin | round(2) }}</td>
+                    <td>{{ item.buy_volume | round(2) }}</td>
+                    <td>{{ item.sell_volume | round(2) }}</td>
+                    <td>{{ item.score | round(2) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

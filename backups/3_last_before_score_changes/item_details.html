@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Details - {{ item_id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #2e2e2e; /* Dark background */
+            color: #e0e0e0; /* Light grey text */
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #3c3c3c; /* Slightly lighter background for the container */
+            padding: 20px;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #444; /* Darker border color */
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #555; /* Dark grey header */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .button {
+            background-color: #4CAF50; /* Green background */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        #plot-container {
+            width: 100%;
+            height: 500px; /* Adjust the height as needed */
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Item Details - {{ item_id }}</h1>
+        
+        <!-- Back to Main Page Button -->
+        <a href="/" class="button">Back to Main Page</a>
+        
+        <h2>Plot</h2>
+        <div id="plot-container"></div>
+        
+        <h2>Item Data</h2>
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Lowest Buy Price</td>
+                <td>{{ item_data.buy_summary[0]['pricePerUnit'] if item_data.buy_summary else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Highest Sell Price</td>
+                <td>{{ item_data.sell_summary[0]['pricePerUnit'] if item_data.sell_summary else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Profit Margin</td>
+                <td>{{ item_data.profit_margin if 'profit_margin' in item_data else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Buy Volume</td>
+                <td>{{ item_data.buy_volume if 'buy_volume' in item_data else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Sell Volume</td>
+                <td>{{ item_data.sell_volume if 'sell_volume' in item_data else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Score</td>
+                <td>{{ item_data.score if 'score' in item_data else 'N/A' }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <script>
+        // Parse the Plotly JSON data from the server
+        var plotJson = {{ plot_json|safe }};
+        
+        // Create the Plotly plot
+        Plotly.react('plot-container', plotJson.data, plotJson.layout);
+    </script>
+</body>
+</html>
